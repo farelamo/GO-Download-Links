@@ -16,6 +16,10 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
+var start = 310
+var end   = 316
+var name  = fmt.Sprintf("%d-%d", start, end)
+
 func execute(row []string, i int) error {
 	downloadURL := row[1]
 	if strings.Contains(row[1], "https://drive.google.com") {
@@ -36,7 +40,7 @@ func execute(row []string, i int) error {
 		// fmt.Println("Download URL:", downloadURL)
 	}
 
-	outFile, err := os.Create(fmt.Sprintf("storage-2/%s.pdf", row[0]))
+	outFile, err := os.Create(fmt.Sprintf("%s/%s.pdf", name, row[0]))
 	if err != nil {
 		fmt.Println("Error creating file:", err)
 		return err
@@ -78,13 +82,13 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
-	os.MkdirAll("storage-2", 0755)
+	os.MkdirAll(name, 0755)
 
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	hehe := []error{}
 	for i := range rows {
-		if i > 400 && i <= 500 {
+		if i >= start && i <= end {
 			if len(rows[i]) >= 2 {
 				wg.Add(1)
 				go func() {
@@ -113,6 +117,4 @@ func main() {
 	}
 
 	fmt.Println("OUTTT")
-
-	// time.Sleep(1 * time.Minute)
 }
